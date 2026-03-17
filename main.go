@@ -5,7 +5,16 @@ func main() {
 
 	chip.Init()
 	chip.LoadROM("./roms/test.ch8")
-	chip.MemoryDump()
+
+	chip.Cycle()
+	chip.Cycle()
+	chip.Cycle()
+	chip.Cycle()
+	chip.Cycle()
+	chip.Cycle()
+	chip.Cycle()
+	chip.Cycle()
+	// chip.MemoryDump()
 
 	// bytes, err := os.ReadFile("./roms/test.ch8")
 	// if err != nil {

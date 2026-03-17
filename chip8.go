@@ -56,8 +56,34 @@ func (c *Chip8) Cycle() {
 	c.PC += 2
 }
 
-func (c *Chip8) Execute(opcode uint16) error {
-	return nil
+func (c *Chip8) Execute(opcode uint16) {
+	// Extrai o primeiro dígito hexadecimal (ex: de 0xA2F0, pega o 'A')
+	firstNibble := opcode & 0xF000
+
+	switch firstNibble {
+	case 0x0000:
+		// Pode ser 00E0 (Clear Screen) ou 00EE (Return)
+		if opcode == 0x00E0 {
+			fmt.Println("Instrução: Limpar Tela")
+		}
+
+	case 0x1000:
+		// 1NNN: Jump para o endereço NNN
+		address := opcode & 0x0FFF
+		c.PC = address
+		// Importante: Como mudamos o PC manualmente,
+		// temos que evitar o PC += 2 no final do Cycle!
+		c.PC -= 2
+
+	case 0xA000:
+		// ANNN: Seta o registrador I para NNN
+		address := opcode & 0x0FFF
+		c.I = address
+		fmt.Printf("Instrução: I = 0x%X\n", address)
+
+	default:
+		fmt.Printf("Opcode não implementado: 0x%X\n", opcode)
+	}
 }
 
 func (c *Chip8) MemoryDump() {
