@@ -25,9 +25,7 @@ func (c *Chip8) LoadROM(filename string) error {
 		return err
 	}
 
-	for i := 0; i < len(data); i++ {
-		c.Memory[MemoryOffset+i] = data[i]
-	}
+	copy(c.Memory[MemoryOffset:], data)
 
 	return nil
 }
