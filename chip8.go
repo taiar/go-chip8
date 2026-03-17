@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"os"
+	"time"
 )
 
 const MemoryOffset = 0x200
@@ -22,6 +23,18 @@ type Chip8 struct {
 
 func (c *Chip8) Init() {
 	c.PC = MemoryOffset
+}
+
+func (c *Chip8) Run() {
+	ticker := time.NewTicker(time.Second / 500) // 500Hz
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			c.Cycle()
+		}
+	}
 }
 
 func (c *Chip8) LoadROM(filename string) error {
