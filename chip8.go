@@ -17,6 +17,7 @@ type Chip8 struct {
 	SP         uint16     // Stack Pointer
 	DelayTimer byte
 	SoundTimer byte
+	Display    [64 * 32]byte // 0 para apagado, 1 para aceso
 }
 
 func (c *Chip8) Init() {
@@ -62,10 +63,11 @@ func (c *Chip8) Execute(opcode uint16) {
 
 	switch firstNibble {
 	case 0x0000:
-		// Pode ser 00E0 (Clear Screen) ou 00EE (Return)
-		if opcode == 0x00E0 {
-			fmt.Println("Instrução: Limpar Tela")
+		// Limpa o array do display colocando 0 em tudo
+		for i := range c.Display {
+			c.Display[i] = 0
 		}
+		fmt.Println("Tela limpa!")
 
 	case 0x1000:
 		// 1NNN: Jump para o endereço NNN
