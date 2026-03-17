@@ -3,6 +3,7 @@ package main
 func main() {
 	var chip Chip8
 
+	chip.Init()
 	chip.LoadROM("./roms/test.ch8")
 	chip.MemoryDump()
 
