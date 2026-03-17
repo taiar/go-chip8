@@ -19,10 +19,12 @@ type Chip8 struct {
 	DelayTimer byte
 	SoundTimer byte
 	Display    [64 * 32]byte // 0 para apagado, 1 para aceso
+	VideoOut   Renderer
 }
 
-func (c *Chip8) Init() {
+func (c *Chip8) Init(videoDisplay Renderer) {
 	c.PC = MemoryOffset
+	c.VideoOut = videoDisplay
 }
 
 func (c *Chip8) Run() {
@@ -84,7 +86,7 @@ func (c *Chip8) Execute(opcode uint16) {
 		for i := range c.Display {
 			c.Display[i] = 0
 		}
-		fmt.Println("Tela limpa!")
+		c.VideoOut.Clear()
 
 	case 0x1000:
 		// 1NNN: Jump para o endereço NNN
@@ -138,6 +140,7 @@ func (c *Chip8) Execute(opcode uint16) {
 				}
 			}
 		}
+		c.VideoOut.Draw(c.Display)
 
 	default:
 		fmt.Printf("Opcode não implementado: 0x%X\n", opcode)

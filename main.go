@@ -2,8 +2,9 @@ package main
 
 func main() {
 	var chip Chip8
+	terminalVideo := &TerminalRenderer{}
 
-	chip.Init()
+	chip.Init(terminalVideo)
 	chip.LoadROM("./roms/test.ch8")
 
 	chip.Run()
