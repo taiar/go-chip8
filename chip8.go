@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+const MemoryOffset = 0x200
+
 type Chip8 struct {
 	Memory     [4096]byte // 4Kb de Ram
 	V          [16]byte   // Registradores V0 a VF
@@ -23,10 +25,8 @@ func (c *Chip8) LoadROM(filename string) error {
 		return err
 	}
 
-	memoryOffset := 0x200
-
 	for i := 0; i < len(data); i++ {
-		c.Memory[memoryOffset+i] = data[i]
+		c.Memory[MemoryOffset+i] = data[i]
 	}
 
 	return nil
