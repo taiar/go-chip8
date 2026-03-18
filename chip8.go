@@ -40,10 +40,12 @@ type Chip8 struct {
 	SoundTimer byte
 	Display    [64 * 32]byte // 0 para apagado, 1 para aceso
 	VideoOut   Renderer
+	IsPaused   bool
 }
 
 func (c *Chip8) Init(videoDisplay Renderer) {
 	c.PC = MemoryOffset
+	c.IsPaused = false
 	c.LoadFontset()
 	c.VideoOut = videoDisplay
 }
@@ -52,7 +54,7 @@ func (c *Chip8) Run() {
 	ticker := time.NewTicker(time.Second / 500) // 500Hz
 	defer ticker.Stop()
 
-	for {
+	for !c.IsPaused {
 		select {
 		case <-ticker.C:
 			c.Cycle()
@@ -83,9 +85,16 @@ func (c *Chip8) Cycle() {
 	highByte := uint16(c.Memory[c.PC])
 	lowByte := uint16(c.Memory[c.PC+1])
 
+	// Fetch
 	opcode := (highByte << 8) | lowByte
-
 	fmt.Printf("PC: 0x%03X | Opcode: 0x%04X\n", c.PC, opcode)
+
+	// Se encontrar 0000 fora de um contexto de comando, para a CPU
+	if opcode == 0x0000 {
+		fmt.Printf("Opcode 0000 encontrado em 0x%X. Encerrando execução.\n", c.PC)
+		c.IsPaused = true
+		return
+	}
 
 	// 2. DECODE & EXECUTE: (Vamos preparar o terreno aqui)
 	c.Execute(opcode)
@@ -94,7 +103,9 @@ func (c *Chip8) Cycle() {
 	// Por padrão, cada instrução tem 2 bytes.
 	// Algumas instruções de pulo alteram o PC diretamente,
 	// mas o padrão é avançar para a próxima.
-	c.PC += 2
+	if !c.IsPaused {
+		c.PC += 2
+	}
 }
 
 func (c *Chip8) Execute(opcode uint16) {
