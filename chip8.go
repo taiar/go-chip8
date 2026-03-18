@@ -87,11 +87,11 @@ func (c *Chip8) Cycle() {
 
 	// Fetch
 	opcode := (highByte << 8) | lowByte
-	fmt.Printf("PC: 0x%03X | Opcode: 0x%04X\n", c.PC, opcode)
+	// fmt.Printf("PC: 0x%03X | Opcode: 0x%04X\n", c.PC, opcode)
 
 	// Se encontrar 0000 fora de um contexto de comando, para a CPU
 	if opcode == 0x0000 {
-		fmt.Printf("Opcode 0000 encontrado em 0x%X. Encerrando execução.\n", c.PC)
+		// fmt.Printf("Opcode 0000 encontrado em 0x%X. Encerrando execução.\n", c.PC)
 		c.IsPaused = true
 		return
 	}
@@ -136,7 +136,7 @@ func (c *Chip8) Execute(opcode uint16) {
 		// ANNN: Seta o registrador I para NNN
 		address := opcode & 0x0FFF
 		c.I = address
-		fmt.Printf("Instrução: I = 0x%X\n", address)
+		// fmt.Printf("Instrução: I = 0x%X\n", address)
 
 	case 0x6000:
 		// 0x6XNN (Set Register VX)
@@ -179,7 +179,7 @@ func (c *Chip8) Execute(opcode uint16) {
 		c.VideoOut.Draw(c.Display)
 
 	default:
-		fmt.Printf("Opcode não implementado: 0x%X\n", opcode)
+		// fmt.Printf("Opcode não implementado: 0x%X\n", opcode)
 	}
 }
 
