@@ -1,11 +1,21 @@
 package main
 
+import "os"
+
 func main() {
 	var chip Chip8
 	terminalOutput := &TerminalRenderer{}
 
+	//FIXME: improve io
+	var romToLoad string
+	if len(os.Args) > 1 {
+		romToLoad = os.Args[1]
+	} else {
+		romToLoad = "./roms/test.ch8"
+	}
+
 	chip.Init(terminalOutput)
-	chip.LoadROM("./roms/test.ch8")
+	chip.LoadROM(romToLoad)
 	// chip.MemoryDump()
 
 	chip.Run()
